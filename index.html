@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Эфир: голосовой чат с незнакомцами (прототип)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="call">
+      <header class="bar">
+        <h1>Эфир</h1>
+        <div class="status" id="status"><i></i><span id="statusText">Не в сети</span><b id="timer" hidden>0:00</b><span id="online"></span></div>
+      </header>
+
+      <!-- Две «капли»: слева вы, справа собеседник. Размер зависит от громкости -->
+      <div class="stage">
+        <canvas id="viz" aria-label="Уровень звука"></canvas>
+        <div class="names"><span>Вы</span><span id="peerName">Собеседник</span></div>
+
+        <!-- Своя камера: появляется по кнопке -->
+        <div class="pip" id="pip" hidden>
+          <video id="camVideo" autoplay playsinline muted></video>
+        </div>
+      </div>
+
+      <div class="filters">
+        <label>Я
+          <select id="me"><option value="m">Парень</option><option value="f">Девушка</option></select>
+        </label>
+        <label>Мой возраст
+          <select id="myAge"><option value="18-24">18–24</option><option value="25-34">25–34</option><option value="35+">35+</option></select>
+        </label>
+        <label>Ищу
+          <select id="who"><option value="any">Любого</option><option value="m">Парня</option><option value="f">Девушку</option></select>
+        </label>
+        <label>Возраст собеседника
+          <select id="age"><option value="any">Любой</option><option value="18-24">18–24</option><option value="25-34">25–34</option><option value="35+">35+</option></select>
+        </label>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="startBtn">Найти собеседника</button>
+        <button id="nextBtn" disabled>Следующий</button>
+        <button id="stopBtn" disabled>Завершить</button>
+        <button id="muteBtn" disabled aria-pressed="false">Микрофон: вкл</button>
+        <button id="camBtn" aria-pressed="false">Камера: выкл</button>
+      </div>
+    </section>
+
+    <aside class="chat">
+      <ul id="messages" aria-live="polite"></ul>
+      <form id="chatForm" autocomplete="off">
+        <input id="msgInput" type="text" placeholder="Написать сообщение" aria-label="Сообщение" disabled>
+        <button type="submit" class="primary" id="sendBtn" disabled>Отправить</button>
+      </form>
+    </aside>
+  </main>
+  <audio id="remoteAudio" autoplay></audio>
+  <script src="app.js"></script>
+</body>
+</html>
