@@ -5,7 +5,13 @@
 // const WS_URL = 'wss://ваш-сервер.example';
 const WS_URL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host;
 // STUN помогает найти путь между пользователями. Для части сетей понадобится ещё TURN-сервер.
-const ICE = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+const ICE = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    // Сюда вставьте данные TURN-сервера, когда он у вас появится, например:
+    // { urls: 'turn:адрес-сервера:80', username: 'логин', credential: 'пароль' },
+  ],
+};
 
 const $ = id => document.getElementById(id);
 
@@ -122,6 +128,13 @@ function startPeer(initiator) {
     if (pc?.connectionState === 'failed') { say('Соединение не удалось (возможно, нужен TURN-сервер). Ищем другого…'); find(); }
   };
   setStatus('Соединяем…');
+  const thisPc = pc;                                     // если за 15 секунд связь не поднялась, сообщаем
+  setTimeout(() => {
+    if (pc === thisPc && pc.connectionState !== 'connected') {
+      say('Прямое соединение не устанавливается. Скорее всего, нужен TURN-сервер.');
+      console.log('ICE state:', pc.iceConnectionState, pc.connectionState);
+    }
+  }, 15000);
   if (initiator) {                                       // первый в паре отправляет offer
     pc.createOffer()
       .then(o => pc.setLocalDescription(o))
